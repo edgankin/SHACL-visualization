@@ -45,6 +45,7 @@ function is_simple(predicate) {
             sh.pattern.value,
             sh.languageIn.value,
             sh.uniqueLang.value,
+            sh.severity.value,
         ].includes(predicate.value);
 }
 

@@ -1,0 +1,45 @@
+@prefix dash: <http://datashapes.org/dash#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix schema: <http://schema.org/> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+
+:UserShape a sh:NodeShape ;
+ sh:targetClass :User ;
+ sh:or ( [ sh:path     foaf:name;
+           sh:minCount 1;
+         ]
+         [ sh:path     schema:name;
+           sh:minCount 1;
+         ]
+       )
+.
+
+:ProductShape a sh:NodeShape;
+ sh:targetClass :Product ;
+ sh:property [
+         sh:path     rdfs:label ;
+         sh:or (
+          [sh:datatype xsd:string]
+          [sh:datatype rdf:langString]
+     );
+     sh:minCount 1;
+         sh:maxCount 1
+  ];
+ sh:property [
+         sh:path     schema:releaseDate ;
+         sh:or (
+          [sh:datatype xsd:date]
+          [sh:datatype xsd:gYear]
+          [sh:in ("unknown-past" "unknown-future")]
+     );
+     sh:minCount 1;
+         sh:maxCount 1
+  ];
+.
+
+
+
+
