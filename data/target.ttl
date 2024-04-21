@@ -6,8 +6,8 @@
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
 
-:UserShapeTargetNodes       a sh:NodeShape ;
-   sh:targetNode :alice, :bob, :carol ;
+schema:UserShapeTargetNodes       a sh:NodeShape ;
+   sh:targetNode schema:alice, schema:bob, schema:carol ;
    sh:property [
     sh:path     schema:name ;
     sh:minCount 1;
@@ -16,8 +16,8 @@
   ] .
 
   
-:UserShapeTargetClass   a  sh:NodeShape ;
- sh:targetClass :User ;
+schema:UserShapeTargetClass   a  sh:NodeShape ;
+ sh:targetClass schema:User ;
  sh:property [
     sh:path     schema:name ;
     sh:minCount 1;
@@ -26,7 +26,7 @@
  ] .
 
 
-:UserImplicit a sh:NodeShape, rdfs:Class ;
+schema:UserImplicit a sh:NodeShape, rdfs:Class ;
  sh:property [
     sh:path     schema:name ;
     sh:minCount 1;
@@ -35,8 +35,8 @@
  ] .
 
 
-:UserShapeSubjectsOf a sh:NodeShape;
- sh:targetSubjectsOf :teaches ;
+schema:UserShapeSubjectsOf a sh:NodeShape;
+ sh:targetSubjectsOf schema:teaches ;
  sh:property [
     sh:path schema:name ;
     sh:minCount 1;
@@ -45,8 +45,8 @@
  ] .
 
  
-:UserShapeObjectsOf a         sh:NodeShape;
- sh:targetObjectsOf :isTaughtBy ;
+schema:UserShapeObjectsOf a         sh:NodeShape;
+ sh:targetObjectsOf schema:isTaughtBy ;
  sh:property [
     sh:path     schema:name ;
     sh:minCount 1;

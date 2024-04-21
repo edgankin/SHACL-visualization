@@ -6,7 +6,7 @@
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
 
-:Person a sh:NodeShape, rdfs:Class ;
+schema:Person a sh:NodeShape, rdfs:Class ;
   sh:property [
    sh:path     schema:name ;
    sh:datatype xsd:string ;
@@ -14,9 +14,9 @@
    sh:maxCount 1
   ] .
 
-:User a sh:NodeShape, rdfs:Class ;
+schema:User a sh:NodeShape, rdfs:Class ;
   sh:and (
-   :Person
+   schema:Person
    [ sh:path      schema:name ;
      sh:maxLength 5
    ]
@@ -27,11 +27,11 @@
    ]
   ) .
 
-:Student a sh:NodeShape, rdfs:Class ;
+schema:Student a sh:NodeShape, rdfs:Class ;
   sh:and (
-   :User
-   [ sh:path      :course ;
+   schema:User
+   [ sh:path      schema:course ;
      sh:nodeKind  sh:IRI ;
      sh:minCount  1;
    ]
-  ) 
+  ) .

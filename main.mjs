@@ -61,7 +61,7 @@ function get_simple_compartment(quad) {
 
 function process_object(quad, parent) {
     switch (quad.predicate.value) {
-        case sh.property:
+        case sh.property.value:
             if (processed[quad.object.value]) {
                 return processed[quad.object.value];
             } else {
@@ -82,16 +82,20 @@ function get_all(node) {
     // console.log(validator.$shapes.node(node_pointer));
     //console.log(node);
     var node_pointer = validator.$shapes.node(node);
-    //console.log(node_pointer);
+    console.log(node_pointer.term);
 
     if (node_pointer.value == undefined) {
-        throw "undefined";
+        throw "undefined in get_all";
     }
 
     //console.log(validator.ns.rdf.nil);
     
     if (node_pointer.value == validator.ns.rdf.nil.value) {
         return [];
+    }
+    //console.log(node_pointer.out(validator.ns.rdf.rest).terms.length);
+    if (node_pointer.out(validator.ns.rdf.first).terms.length == 0) {
+        return [node_pointer];
     }
   
     return [node_pointer.out(validator.ns.rdf.first)].concat(get_all(node_pointer.out(validator.ns.rdf.rest).term));
@@ -108,12 +112,18 @@ function get_in_str(in_obj) {
     return ss;
 }
 
+// TODO combine into one method
+
 function process_in(parent, in_obj) {
     parent.compartments.push(new Compartment(sh.in.value, get_in_str(in_obj)));
 }
 
 function process_languageIn(parent, in_obj) {
     parent.compartments.push(new Compartment(sh.languageIn.value, get_in_str(in_obj)));
+}
+
+function process_ignoredProperties(parent,ip_obj) {
+    parent.compartments.push(new Compartment(sh.ignoredProperties.value, get_in_str(ip_obj)))
 }
 
 function process_logical_el(parent, logical_obj, logical_type) {
@@ -126,11 +136,39 @@ function process_logical_el(parent, logical_obj, logical_type) {
     console.log(logical_type);
 
      console.log("ALL LOGICAL ELEMENTS");
-     console.log(get_all(logical_obj));
+     var lol = get_all(logical_obj).terms
+     console.log("ALL LOGICAL ELEMENTS lol");
+     console.log(lol);
+     console.log("ALL LOGICAL ELEMENTS starpterms");
+    get_all(logical_obj).forEach((o) => {
+        console.log(o.term);
+
+        console.log("-----");
+        
+        validator.$shapes.dataset.match(o.term, null, null, null)._quads.forEach((quad) => {
+        console.log(quad);
+        });
+
+        console.log("-----");
+        
+        validator.$shapes.dataset.match(null, null,o.term, null)._quads.forEach((quad) => {
+        console.log(quad);
+        });
+
+        console.log("-----");
+
+
+    });
+
      console.log("ALL LOGICAL ELEMENTS OUT");
+
+
 
     get_all(logical_obj).forEach((obj) => {
         console.log(obj.value);
+        if (validator.$shapes.dataset.match(obj.term, null, null, null)._quads.size > 1) {
+            non_simple_found = true;
+        }
         validator.$shapes.dataset.match(obj.term, null, null, null)._quads.forEach((quad) => {
              console.log("LOGICAL EL LOOP");
              console.log(quad);
@@ -148,14 +186,44 @@ function process_logical_el(parent, logical_obj, logical_type) {
         var el = new LogicalEl(logical_type);
         objects.push(el);
         get_all(logical_obj).forEach((obj) => {
-            validator.$shapes.dataset.match(obj.term, null, null, null)._quads.forEach((quad) => {
-                links.push([el, process_object(quad, el)]);
-            });
+            var quads = validator.$shapes.dataset.match(obj.term, null, null, null)._quads;
+            // console.log("quads.length");
+            // console.log(quads.size);
+            if (quads.size == 0) {
+                throw "Something is wrong";
+            }
             
-            links.push([parent, el]);    
+            if (quads.size == 1) {
+                quads.forEach((quad) => {
+                    links.push([el, process_object(quad, el)]);
+                });
+         
+            } else {
+                console.log("HERE");
+                console.log(obj.term);
+                //console.log(obj.has(validator.ns.rdf.type, sh.NodeShape).terms.length);
+                if (obj.has(validator.ns.rdf.type, sh.NodeShape).terms.length > 0) {
+                    if (processed[obj.value]) {
+                        links.push([el, processed[obj.value]]);
+                    } else {
+                        var nodeshape = new NodeShape(obj.term);
+                        links.push([el, nodeshape]);
+                    }
+                   // objects.push(nodeshape);
+                } else {
+                    // Assume it is property
+                    if (processed[obj.value]) {
+                        links.push([el, processed[obj.value]]);
+                    } else {
+                        var propertyshape = new PropertyShape(obj.term);
+                        links.push([el, propertyshape]);
+                        // objects.push(propertyshape);
+                    }
+                }
+            }
         });
-
-        return el;
+        links.push([parent, el]);  
+        return el; // TODO do we need return ? 
         
     } else {
         var ss = "";
@@ -189,10 +257,11 @@ class Compartment {
 class Predicate {
     constructor(value) {
         this.value = value;
+        this.id = get_id();
     }
 
     toString() {
-        return "PREDICATE: " + this.value;
+        return "PREDICATE: " + this.value + "| id: " + this.id + "\n";
     }
 }
 
@@ -202,8 +271,9 @@ class NodeShape {
 
 
         console.log("PROCESS SHAPE!");
-        //console.log(shape._context);
-        //console.log(validator.$shapes.dataset.match(shape.value, null, null, null));
+        console.log(shape.value);
+        console.log(shape);
+        console.log(validator.$shapes.dataset.match(shape, null, null, null)._quads);
 
         this.name = get_without_prefix(shape.value);
         console.log(this.name);
@@ -211,7 +281,7 @@ class NodeShape {
 
         processed[shape.value] = this;
 
-        validator.$shapes.dataset.match(shape.value, null, null, null)._quads.forEach((quad) => {
+        validator.$shapes.dataset.match(shape, null, null, null)._quads.forEach((quad) => {
             console.log(quad);
             console.log(quad.predicate);
             
@@ -220,9 +290,13 @@ class NodeShape {
             } else {
                 switch(quad.predicate.value) {
                     case sh.property.value:
+                        // console.log("quad.object.value");
+                        // console.log(quad.object.value);
+                        // throw "remove me";
                         if (!processed[quad.object.value]) {
-                            var prop_obj = new PropertyShape(validator.$shapes.node(quad.object));
+                            var prop_obj = new PropertyShape(quad.object);
                             links.push([this, prop_obj]);
+                           // objects.push(prop_obj);
                         }
                         break;
                     case sh.targetClass.value:
@@ -259,6 +333,9 @@ class NodeShape {
                     case sh.languageIn.value:
                         process_languageIn(this, quad.object);
                         break;
+                    case sh.ignoredProperties.value:
+                        process_ignoredProperties(this, quad.object);
+                        break;   
                     case sh.or.value:
                     case sh.and.value:
                     case sh.xone.value:
@@ -280,6 +357,8 @@ class NodeShape {
             }
         }
         });
+
+        objects.push(this);
     }
 
     toString() {
@@ -311,14 +390,14 @@ class PropertyShape {
         console.log(property.term);
         console.log(property.value);
 
-        console.log(validator.$shapes.dataset.match(property.term, null, null, null)._quads);
+        //console.log(validator.$shapes.dataset.match(property.term, null, null, null)._quads);
 
         //this.name = get_without_prefix(property.value);
         this.compartments = [];
 
         processed[property.value] = this;
 
-        validator.$shapes.dataset.match(property.term, null, null, null)._quads.forEach((quad) => {
+        validator.$shapes.dataset.match(property, null, null, null)._quads.forEach((quad) => {
            // console.log(quad);
             if (is_simple(quad.predicate)) {
                 console.log("SIMPLE!!!");
@@ -441,8 +520,8 @@ console.log('-----+++++++++++++++++++++++++++++');
     validator.$shapes.has(rdf.type, sh.NodeShape).toArray().forEach((shape) => {
         if (shape.value.startsWith('http://schema.org')) {
             console.log(shape.term);
-            var shape_obj = new NodeShape(shape);
-            objects.push(shape_obj);
+            var shape_obj = new NodeShape(shape.term);
+            //objects.push(shape_obj);
         }
         
    });

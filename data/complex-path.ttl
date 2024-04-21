@@ -7,7 +7,7 @@
 
 
 schema:UserShape a sh:NodeShape;
- sh:targetClass :User ;
+ sh:targetClass schema:User ;
  sh:property [
    sh:path     [sh:alternativePath (schema:knows schema:follows)] ;
    sh:nodeKind sh:IRI ;

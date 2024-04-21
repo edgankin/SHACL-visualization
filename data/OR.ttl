@@ -6,9 +6,9 @@
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
 
-:UserShape a sh:NodeShape ;
- sh:targetClass :User ;
- sh:or ( [ sh:path     foaf:name;
+schema:UserShape a sh:NodeShape ;
+ sh:targetClass schema:User ;
+ sh:or ( [ sh:path     schema:nickname;
            sh:minCount 1;
          ]
          [ sh:path     schema:name;
@@ -17,8 +17,8 @@
        )
 .
 
-:ProductShape a sh:NodeShape;
- sh:targetClass :Product ;
+schema:ProductShape a sh:NodeShape;
+ sh:targetClass schema:Product ;
  sh:property [
          sh:path     rdfs:label ;
          sh:or (

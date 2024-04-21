@@ -6,7 +6,7 @@
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
 
-:Product a sh:NodeShape ;
+schema:Product a sh:NodeShape ;
  sh:or (
   [ sh:not
      [ sh:path     rdf:type ;

@@ -6,8 +6,8 @@
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
 
-:UserShape a sh:NodeShape ;
-  sh:targetClass       :User ;
+schema:UserShape a sh:NodeShape ;
+  sh:targetClass       schema:User ;
   sh:closed            true ;
   sh:ignoredProperties ( rdf:type );
   sh:property [

@@ -6,8 +6,8 @@
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
 
-:UserShape a sh:NodeShape;
- sh:targetClass :User ;
+schema:UserShape a sh:NodeShape;
+ sh:targetClass schema:User ;
  sh:xone (
   [ sh:path     schema:name ;
     sh:datatype xsd:string ;
@@ -29,10 +29,10 @@
   ]
  ) .
 
- :NotFoaf a sh:NodeShape ;
+ schema:NotFoaf a sh:NodeShape ;
   sh:not [
     sh:property [
-      sh:path foaf:name ;
+      sh:path schema:name ;
       sh:minCount 1 ;
     ] ;
   ] .

@@ -6,8 +6,8 @@
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
 
-:ConcertShape a sh:NodeShape ;
- sh:targetClass :Concert ;
+schema:ConcertShape a sh:NodeShape ;
+ sh:targetClass schema:Concert ;
  sh:property [
   sh:path             schema:doorTime ;
   sh:datatype         xsd:dateTime ;
