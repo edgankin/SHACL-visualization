@@ -7,14 +7,14 @@
 
 
 schema:UserShapeOne a sh:NodeShape;
-   sh:targetClass :User ;
-   sh:property [                  # Blank node 1
+   sh:targetClass schema:User ;
+   sh:property [                
     sh:path     schema:name ;
     sh:minCount 1;
     sh:maxCount 1;
     sh:datatype xsd:string ;
   ] ;
-  sh:property [                   # Blank node 2
+  sh:property [                  
    sh:path schema:gender ;
    sh:minCount 1;
    sh:maxCount 1;
@@ -23,21 +23,21 @@ schema:UserShapeOne a sh:NodeShape;
     [ sh:datatype xsd:string]
    )
   ] ;
-  sh:property [                   # Blank node 3  
+  sh:property [                  
    sh:path     schema:birthDate ;
    sh:maxCount 1;
    sh:datatype xsd:date ;
   ] ;
-  sh:property [                   # Blank node 4 
+  sh:property [                   
    sh:path     schema:knows ;
    sh:nodeKind sh:IRI ;
-   sh:class    :User ;
+   sh:class    schema:User ;
   ] .
 
   
 schema:UserShapeTwo a sh:NodeShape ;
-  sh:targetClass :User ;
+  sh:targetClass schema:User ;
   sh:property [
    sh:path     schema:affiliation ;
-   sh:hasValue :OurCompany
+   sh:hasValue schema:OurCompany
   ] .

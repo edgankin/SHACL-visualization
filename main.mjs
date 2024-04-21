@@ -3,7 +3,7 @@ import SHACLValidator from 'rdf-validate-shacl'
 import { toSparql } from 'clownface-shacl-path'
 
 
-const shapes = await rdf.dataset().import(rdf.fromFile('my-shapes.ttl'))
+const shapes = await rdf.dataset().import(rdf.fromFile('./data/simple3.ttl'))
 const validator = new SHACLValidator(shapes, { factory: rdf })
 
 const { sh } = validator.ns
@@ -28,7 +28,7 @@ function is_simple(predicate) {
     // console.log(validator.ns.rdf.type);
      //console.log(predicate);
     return [sh.datatype.value, 
-            sh.nodetype.value,
+            sh.nodeKind.value,
             sh.name.value, 
             sh.maxCount.value, 
             sh.minCount.value,
@@ -43,10 +43,16 @@ function is_simple(predicate) {
             sh.minLength.value,
             sh.maxLength.value,
             sh.pattern.value,
-            sh.languageIn.value,
             sh.uniqueLang.value,
             sh.severity.value,
+            sh.class.value, // TODO check
+            sh.hasValue.value, // TODO check
+            sh.flags.value,
         ].includes(predicate.value);
+}
+
+function convertable_to_compartment(predicate) {
+    return is_simple(predicate) || predicate.value == sh.in.value || predicate.value == sh.languageIn.value;
 }
 
 function get_simple_compartment(quad) {
@@ -93,13 +99,21 @@ function get_all(node) {
 
 }
 
-function process_in(parent, in_obj) {
+function get_in_str(in_obj) {
     var ss = "\n";
 
     get_all(in_obj).forEach((obj) => {
        ss = ss + "\t" + obj + "\n"; 
     });
-    parent.compartments.push(new Compartment(sh.in.value, ss));
+    return ss;
+}
+
+function process_in(parent, in_obj) {
+    parent.compartments.push(new Compartment(sh.in.value, get_in_str(in_obj)));
+}
+
+function process_languageIn(parent, in_obj) {
+    parent.compartments.push(new Compartment(sh.languageIn.value, get_in_str(in_obj)));
 }
 
 function process_logical_el(parent, logical_obj, logical_type) {
@@ -122,7 +136,7 @@ function process_logical_el(parent, logical_obj, logical_type) {
              console.log(quad);
             // console.log(quad.predicate);
             
-            if (!is_simple(quad.predicate)) {
+            if (!convertable_to_compartment(quad.predicate)) {
                 non_simple_found = true;
             }
         });
@@ -147,7 +161,13 @@ function process_logical_el(parent, logical_obj, logical_type) {
         var ss = "";
         get_all(logical_obj).forEach((obj) => {
             validator.$shapes.dataset.match(obj.term, null, null, null)._quads.forEach((quad) => {
-            ss = ss + "\t" + quad.predicate.value + " " + quad.object.value + "\n"; 
+            if (is_simple(quad.predicate)) {
+                ss = ss + "\t" + quad.predicate.value + " " + quad.object.value + "\n"; 
+            } else if (quad.predicate.value == sh.in.value || quad.predicate.value == sh.languageIn.value) {
+                ss = ss + "\t" + quad.predicate.value + " " + get_in_str(quad.object) + "\n"; 
+            } else {
+                throw "Unexpected SHACL construction inside logical element"
+            }
             });
         });
 
@@ -236,6 +256,9 @@ class NodeShape {
                     case sh.in.value:
                         process_in(this, quad.object);
                         break;
+                    case sh.languageIn.value:
+                        process_languageIn(this, quad.object);
+                        break;
                     case sh.or.value:
                     case sh.and.value:
                     case sh.xone.value:
@@ -308,6 +331,9 @@ class PropertyShape {
                     case sh.in.value:
                         process_in(this, quad.object);
                         break;
+                    case sh.languageIn.value:
+                        process_languageIn(this, quad.object);
+                        break;    
                     case sh.or.value:
                     case sh.and.value:
                     case sh.xone.value:
@@ -402,7 +428,7 @@ async function main() {
   
 //    console.log(validator.$shapes.has(rdf.type, sh.NodeShape).terms);
 //    console.log('-----+++++++++++++++++++++++++++++');
-//    console.log(validator.$shapes.dataset);
+    console.log(validator.$shapes.dataset._quads);
 
 //    var shapeNodes = validator.$shapes.has(rdf.type, sh.NodeShape);
 

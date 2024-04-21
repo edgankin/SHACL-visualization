@@ -6,7 +6,7 @@
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
 
-:User a sh:NodeShape, rdfs:Class ;
+schema:User a sh:NodeShape, rdfs:Class ;
  sh:property [
    sh:path schema:name ;
    sh:minLength 4 ;
@@ -18,8 +18,8 @@
  ] .
 
  
-:ProductShape a sh:NodeShape ;
- sh:targetClass :Product ;
+schema:ProductShape a sh:NodeShape ;
+ sh:targetClass schema:Product ;
  sh:property [
    sh:path    schema:productID ;
    sh:pattern "^P\\d{3,4}" ;
@@ -27,10 +27,10 @@
  ] .
 
  
-:CountryShape a sh:NodeShape ;
-  sh:targetClass :Country ;
+schema:CountryShape a sh:NodeShape ;
+  sh:targetClass schema:Country ;
   sh:property [
-    sh:path       skos:prefLabel ;
+    sh:path       schema:prefLabel ;
     sh:minCount   1 ;
     sh:uniqueLang true ;
     sh:languageIn ("en" "es") ;
