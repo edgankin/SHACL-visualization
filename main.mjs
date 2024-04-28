@@ -1,13 +1,35 @@
 import rdf from '@zazuko/env-node'
 import SHACLValidator from 'rdf-validate-shacl'
 import { toSparql } from 'clownface-shacl-path'
+import { createRequire } from "module";
+
+const FILE = 'simple3';
+const VERSION = '8';
+
+const require = createRequire(import.meta.url);
 
 
-const shapes = await rdf.dataset().import(rdf.fromFile('./data/simple3.ttl'))
+var config = null;
+var sample_data = null;
+
+var fs = require('fs');
+
+var data = fs.readFileSync('extracted_config.json', 'utf-8');
+config = JSON.parse(data);
+
+
+const diagramTypeId =  config.types[0].object._id; // TODO
+const diagramId = config.types[0].object.diagramId
+
+
+const shapes = await rdf.dataset().import(rdf.fromFile('./data/' + FILE + '.ttl'))
 const validator = new SHACLValidator(shapes, { factory: rdf })
 
 const { sh } = validator.ns
 const schema = rdf.namespace('http://schema.org/')
+
+const schema_str = (schema.a.value).substring(0, schema.a.value.length-1);
+const sh_str = (sh.a.value).substring(0, sh.a.value.length-1);
 
 var objects = []
 var links = []
@@ -16,11 +38,20 @@ var idx = 0;
 
 function get_id() {
     idx = idx + 1;
-    return idx;
+    let ret = 10000 + idx;
+    return '111111111111' + ret.toString();
 }
 
 function get_without_prefix(predicate) {
-    return predicate.substring(schema.length);
+    if (predicate.startsWith(schema_str)) {
+        return predicate.substring(schema_str.length);
+    } else if (predicate.startsWith(sh_str)) {
+        return predicate.substring(sh_str.length);
+    } else {
+        console.log(predicate);
+        console.log(schema_str);
+        throw "Unknown prefix";
+    }
 }
 
 function is_simple(predicate) {
@@ -252,6 +283,37 @@ class Compartment {
     toString() {
         return "[" + this.type + ": " + this.value + "]";
     }
+
+    toJSON(boxName) {
+        return get_compartment_JSON("sh:" + get_without_prefix(this.type), this.value, boxName);
+    }
+}
+
+function get_compartment_JSON(name, value, boxName) {
+    var comp_type = get_by_name(get_by_name(config.types[0].boxTypes, boxName).compartmentTypes, name).object
+
+    return {
+        _id: get_id(),
+        projectId: "e37eAFfnFzoM7sKaZ", // TODO
+        diagramId: comp_type.diagramId,
+        elementId: comp_type.elementId,
+        diagramTypeId: comp_type.diagramTypeId,
+        elementTypeId: comp_type.elementTypeId,
+        versionId: "HnfDuP7yoEdrduBT6",
+        compartmentTypeId: comp_type._id,
+        input: value,
+        value: comp_type.prefix + value,
+        index: comp_type.index,
+        isObjectRepresentation: false,
+        type: comp_type.inputType.inputType,
+        styleId: comp_type.styles[0].id,
+        style: comp_type.styles[0].style, 
+        valueLC: (comp_type.prefix + value).toLowerCase(),
+        compartmentTypeName: name,
+        toolName: "Viziquer", // TODO
+        toolId: "w8C38K9hR2cB4pafL" // TODO
+    }
+
 }
 
 class Predicate {
@@ -262,6 +324,12 @@ class Predicate {
 
     toString() {
         return "PREDICATE: " + this.value + "| id: " + this.id + "\n";
+    }
+
+    toJSON() {
+        var box = get_empy_box("Relation", "Default", this.id);
+        box.compartments.push(get_compartment_JSON("Name", this.value, "Predicate"))
+        return box;
     }
 }
 
@@ -324,6 +392,9 @@ class NodeShape {
                     case sh.ignored.value:
                         this.ignored = true;
                         break;
+                    case sh.deactivated.value:
+                        this.deactivated = true;
+                        break;
                     case sh.closed.value:
                         this.closed = true;
                         break;
@@ -369,6 +440,26 @@ class NodeShape {
         });
         ss = ss + "]\n";
         return ss;
+    }
+
+    toJSON() {
+        var style = "Default";
+        if (this.closed) {
+            style = "Closed";
+        }
+        var box = get_empy_box("NodeShape", style, this.id);
+        box.compartments.push(get_compartment_JSON("Name", this.name, "NodeShape"))
+
+        if (this.closed) {
+            box.compartments.push(get_compartment_JSON("Closed", "true", "NodeShape"))
+        }
+
+        this.compartments.forEach((comp) => {
+            box.compartments.push(comp.toJSON("NodeShape"));
+        });
+
+    
+        return box;
     }
 
 }
@@ -449,6 +540,17 @@ class PropertyShape {
         ss = ss + "]\n";
         return ss;
     }
+
+    toJSON() {
+        var box = get_empy_box("PropertyShape", "Default", this.id);
+        box.compartments.push(get_compartment_JSON("Path", this.path.toString(({ prologue: false })), "PropertyShape"))
+
+        this.compartments.forEach((comp) => {
+            box.compartments.push(comp.toJSON("PropertyShape"));
+        });
+
+        return box;
+    }
 }
 
 class Object {
@@ -460,6 +562,12 @@ class Object {
     toString() {
         return "Object: " + this.name + "| id: " + this.id;
     }
+
+    toJSON() {
+        var box = get_empy_box("Object", "Default", this.id);
+        box.compartments.push(get_compartment_JSON("Name", this.name, "Object"))
+        return box;
+    }
 }
 
 class Class {
@@ -470,6 +578,12 @@ class Class {
 
     toString() {
         return "Class: " + this.name + "| id: " + this.id;
+    }
+
+    toJSON() {
+        var box = get_empy_box("Class", "Default", this.id);
+        box.compartments.push(get_compartment_JSON("Name", get_without_prefix(this.name), "Class"))
+        return box;
     }
 }
 
@@ -483,18 +597,219 @@ class LogicalEl {
     toString() {
         return "LogicalEl: " + this.type + "| id: " + this.id;
     }
-}
 
-class IgnoredProps {
-    constructor() {
-        this.id = get_id();
-    }
-
-    toString() {
-        return "IgnoredProps\n";
+    toJSON() {
+        var box = get_empy_box("LogicalElement", "Default", this.id);
+        box.compartments.push(get_compartment_JSON("TYPE",get_without_prefix(this.value).toUpperCase(), "LogicalElement"))
+        return box;
     }
 }
 
+// class IgnoredProps {
+//     constructor() {
+//         this.id = get_id();
+//     }
+
+//     toString() {
+//         return "IgnoredProps\n";
+//     }
+// }
+
+function get_empty_diagram() {
+    return {
+        _id: get_id(),
+        name: FILE + '_v' + VERSION,
+        projectId: "e37eAFfnFzoM7sKaZ", // TODO 
+        versionId: "HnfDuP7yoEdrduBT6",
+        isLayoutComputationNeededOnLoad: 1,
+        style: {
+            fillPriority: "color",
+            fill: "#ffffff",
+            fillLinearGradientStartPointX: 0.5,
+            fillLinearGradientStartPointY: 0,
+            fillLinearGradientEndPointX: 0.5,
+            fillLinearGradientEndPointY: 1,
+            fillLinearGradientColorStops: [
+                0,
+                "white",
+                1,
+                "black"
+            ],
+            fillRadialGradientStartPointX: 0.5,
+            fillRadialGradientStartPointY: 0.5,
+            fillRadialGradientEndPointX: 0.5,
+            fillRadialGradientEndPointY: 0.5,
+            fillRadialGradientStartRadius: 0,
+            fillRadialGradientEndRadius: 1,
+            fillRadialGradientColorStops: [
+                0,
+                "white",
+                1,
+                "black"
+            ]
+        },
+        diagramTypeId: diagramTypeId,
+        editorType: "ajooEditor",
+        createdAt: "2024-04-11T04:17:43.004Z",
+        createdBy: "c3TBoLRFSdGzyXsJ9",
+        imageUrl: "http://placehold.it/770x347",
+        edit: {
+            action: "new",
+            time: "2024-04-11T04:17:43.004Z",
+            userId: "c3TBoLRFSdGzyXsJ9"
+        },
+        parentDiagrams: [],
+        allowedGroups: [],
+        seenCount: 1,
+        diagramTypeName: config.types[0].object.name,
+        toolName: "Viziquer", // TODO
+        toolId: "w8C38K9hR2cB4pafL", // TODO
+        elements: []
+        }
+}
+
+function getLinkJSON(link) {
+    var element_obj = get_by_name(config.types[0].lineTypes, "Connection");
+    var style_obj = get_by_name(element_obj.object.styles, "Default");
+    return {
+        _id: get_id(),
+        startElement: link[0].id,
+        endElement: link[1].id,
+        diagramId: diagramId, // TODO
+        diagramTypeId: diagramTypeId,
+        elementTypeId:  element_obj.object._id,
+        style: {
+            "elementStyle": {
+                "stroke": "rgb(65,113,156)",
+                "strokeWidth": 1,
+                "shadowColor": "red",
+                "shadowBlur": 0,
+                "shadowOpacity": 1,
+                "shadowOffsetX": 0,
+                "shadowOffsetY": 0,
+                "tension": 0,
+                "opacity": 1,
+                "dash": []
+            },
+            "startShapeStyle": {
+                "fill": "rgb(65,113,156)",
+                "fillPriority": "color",
+                "stroke": "rgb(65,113,156)",
+                "strokeWidth": 1,
+                "shadowColor": "red",
+                "shadowBlur": 0,
+                "shadowOpacity": 1,
+                "shadowOffsetX": 0,
+                "shadowOffsetY": 0,
+                "tension": 0,
+                "opacity": 1,
+                "dash": [],
+                "radius": 7,
+                "shape": "None"
+            },
+            "endShapeStyle": {
+                "fill": "rgb(65,113,156)",
+                "fillPriority": "color",
+                "stroke": "rgb(65,113,156)",
+                "strokeWidth": 1,
+                "shadowColor": "red",
+                "shadowBlur": 0,
+                "shadowOpacity": 1,
+                "shadowOffsetX": 0,
+                "shadowOffsetY": 0,
+                "tension": 0,
+                "opacity": 1,
+                "dash": [],
+                "radius": 12,
+                "shape": "Triangle"
+            },
+            "lineType": "Orthogonal"
+        },
+        styleId: style_obj.id,
+        type: "Line",
+        points: [
+            345,
+            538,
+            345,
+            601,
+            380,
+            601,
+            380,
+            663
+        ],
+        projectId: "e37eAFfnFzoM7sKaZ", // TODO
+        versionId: "HnfDuP7yoEdrduBT6",
+        elementTypeName: "Connection",
+        toolName: "Viziquer",
+        toolId: "w8C38K9hR2cB4pafL",
+        compartments: []
+    };
+}
+
+//elementTypeId
+//style
+//styleId
+//elementTypeName
+
+// function get_box_desc(boxTypeName, style) {
+//     var element_obj = get_by_name(config.types.boxTypes, boxTypeName)
+//     elementTypeId = element_obj.object._id
+//     elementTypeName = boxTypeName
+//     var style_obj = get_by_name(element_obj.object.styles, style)
+//     style = {elementStyle: style_obj.elementStyle }
+//     styleId = style_obj.id
+// }
+
+function get_by_name(arr, name) {
+    console.log("get_by_name");
+    console.log(arr);
+    console.log(name);
+    var ret = null;
+    arr.forEach((obj) => {
+        // console.log(obj.object.name == name);
+         console.log(obj.name);
+         console.log(name);
+        if (obj.name == name) {
+            ret = obj;
+        }
+        
+        if (obj.object) {
+            console.log(obj.object.name);
+            console.log(obj.object.name.length);
+            console.log(name.length);
+            console.log(obj.object.name == name);
+            if (obj.object.name == name) {
+                ret = obj;
+            }
+        }
+    });
+    console.log("ret:");
+    console.log(ret);
+    return ret;
+}
+
+function get_empy_box(boxTypeName, style, id) {
+    console.log(config.types[0].boxTypes);
+    var element_obj = get_by_name(config.types[0].boxTypes, boxTypeName)
+    console.log(element_obj);
+    var style_obj = get_by_name(element_obj.object.styles, style)
+    return {
+        _id: id,
+        diagramId: diagramId,
+        diagramTypeId: diagramTypeId,
+        type: "Box",
+        elementTypeId: element_obj.object._id,
+        elementTypeName: boxTypeName,
+        style: {elementStyle: style_obj.elementStyle },
+        styleId: style_obj.id,
+        location: {x: 333, y: 195, width: 130, height: 83},
+        projectId: "e37eAFfnFzoM7sKaZ",
+        versionId: "HnfDuP7yoEdrduBT6",
+        toolName: "Viziquer",
+        toolId: "w8C38K9hR2cB4pafL",
+        compartments: []
+    }
+}
 async function main() {
 
    // console.log(shapes);
@@ -542,6 +857,29 @@ console.log('-----+++++++++++++++++++++++++++++');
     links.forEach((link) => {
         console.log(link[0].id + " --> " + link[1].id);
     });
+    
+    data = fs.readFileSync('sample_data.json', 'utf-8');
+    
+    sample_data = JSON.parse(data);
+    
+    var diagram_obj = get_empty_diagram();
+
+    objects.forEach((obj) => {
+        // if (obj.toJSON() == null) {
+        //     console.log(obj);
+        //     throw "LOL"
+        // }
+        diagram_obj.elements.push(obj.toJSON());
+    });
+
+    links.forEach((link) => {
+        diagram_obj.elements.push(getLinkJSON(link));
+    })
+
+    fs.writeFile('diagram_' + FILE + '_v' + VERSION + '.json', JSON.stringify({diagrams : [diagram_obj], project : sample_data.project}, null, "\t"), (err) => {
+        if (err) throw err;
+    })
+
 }
 
 main();

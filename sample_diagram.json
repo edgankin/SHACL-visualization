@@ -1,0 +1,398 @@
+{
+    "diagrams": [
+        {
+            "_id": "jqrNbtAG6e2AEPoeQ",
+            "name": "20",
+            "projectId": "Y3Q2KBhsz2WPrguGF",
+            "versionId": "zkQkzLTYyjraFeqaX",
+            "style": {
+                "fillPriority": "color",
+                "fill": "#ffffff",
+                "fillLinearGradientStartPointX": 0.5,
+                "fillLinearGradientStartPointY": 0,
+                "fillLinearGradientEndPointX": 0.5,
+                "fillLinearGradientEndPointY": 1,
+                "fillLinearGradientColorStops": [
+                    0,
+                    "white",
+                    1,
+                    "black"
+                ],
+                "fillRadialGradientStartPointX": 0.5,
+                "fillRadialGradientStartPointY": 0.5,
+                "fillRadialGradientEndPointX": 0.5,
+                "fillRadialGradientEndPointY": 0.5,
+                "fillRadialGradientStartRadius": 0,
+                "fillRadialGradientEndRadius": 1,
+                "fillRadialGradientColorStops": [
+                    0,
+                    "white",
+                    1,
+                    "black"
+                ]
+            },
+            "diagramTypeId": "pq99ovHxKaCwPD7tB",
+            "editorType": "ajooEditor",
+            "createdAt": "2024-04-25T21:49:48.216Z",
+            "createdBy": "c3TBoLRFSdGzyXsJ9",
+            "imageUrl": "http://placehold.it/770x347",
+            "edit": {
+                "action": "new",
+                "time": "2024-04-25T21:49:48.216Z",
+                "userId": "c3TBoLRFSdGzyXsJ9"
+            },
+            "parentDiagrams": [],
+            "allowedGroups": [],
+            "seenCount": 1,
+            "diagramTypeName": "SHACL_WIP_20",
+            "toolName": "MyTool",
+            "elements": [
+                {
+                    "_id": "MRBPXh6rtTkPKtSqC",
+                    "diagramId": "jqrNbtAG6e2AEPoeQ",
+                    "diagramTypeId": "pq99ovHxKaCwPD7tB",
+                    "elementTypeId": "Zanqek96i666yP3SW",
+                    "style": {
+                        "elementStyle": {
+                            "fill": "rgb(111,0,0)",
+                            "fillPriority": "color",
+                            "fillLinearGradientStartPointX": 0.5,
+                            "fillLinearGradientStartPointY": 0,
+                            "fillLinearGradientEndPointX": 0.5,
+                            "fillLinearGradientEndPointY": 1,
+                            "fillLinearGradientColorStops": [
+                                0,
+                                "white",
+                                1,
+                                "black"
+                            ],
+                            "fillRadialGradientStartPointX": 0.5,
+                            "fillRadialGradientStartPointY": 0.5,
+                            "fillRadialGradientEndPointX": 0.5,
+                            "fillRadialGradientEndPointY": 0.5,
+                            "fillRadialGradientStartRadius": 0,
+                            "fillRadialGradientEndRadius": 1,
+                            "fillRadialGradientColorStops": [
+                                0,
+                                "white",
+                                1,
+                                "black"
+                            ],
+                            "stroke": "rgb(65,113,156)",
+                            "strokeWidth": 1,
+                            "shadowColor": "red",
+                            "shadowBlur": 0,
+                            "shadowOpacity": 1,
+                            "shadowOffsetX": 0,
+                            "shadowOffsetY": 0,
+                            "tension": 0,
+                            "opacity": 1,
+                            "dash": [],
+                            "shape": "RoundRectangle"
+                        }
+                    },
+                    "styleId": "3f66b9a45aff22770eb5ed43",
+                    "type": "Box",
+                    "location": {
+                        "x": 141,
+                        "y": 59,
+                        "width": 55,
+                        "height": 46
+                    },
+                    "initialCompartments": [
+                        {
+                            "input": "false",
+                            "value": "false",
+                            "compartmentTypeId": "GwPvX2zwXCWkXLJa2"
+                        }
+                    ],
+                    "projectId": "Y3Q2KBhsz2WPrguGF",
+                    "versionId": "zkQkzLTYyjraFeqaX",
+                    "elementTypeName": "ShapeNode",
+                    "toolName": "MyTool",
+                    "compartments": [
+                        {
+                            "_id": "WBAYrJjrnRGsEmfHE",
+                            "elementId": "MRBPXh6rtTkPKtSqC",
+                            "diagramId": "jqrNbtAG6e2AEPoeQ",
+                            "diagramTypeId": "pq99ovHxKaCwPD7tB",
+                            "elementTypeId": "Zanqek96i666yP3SW",
+                            "versionId": "zkQkzLTYyjraFeqaX",
+                            "compartmentTypeId": "GwPvX2zwXCWkXLJa2",
+                            "input": "false",
+                            "index": 72,
+                            "styleId": "7445e511c6835fac735b5869",
+                            "style": {
+                                "align": "left",
+                                "fill": "white",
+                                "padding": 0,
+                                "placement": "start-left",
+                                "visible": false,
+                                "fontSize": 15,
+                                "fontStyle": "normal",
+                                "fontFamily": "Calibri",
+                                "fontVariant": "normal",
+                                "strokeWidth": "1"
+                            },
+                            "isObjectRepresentation": false,
+                            "value": "false",
+                            "valueLC": "false",
+                            "projectId": "Y3Q2KBhsz2WPrguGF",
+                            "compartmentTypeName": "Closed",
+                            "toolName": "MyTool"
+                        },
+                        {
+                            "_id": "7RgfD8eGdbSN2wGKd",
+                            "projectId": "Y3Q2KBhsz2WPrguGF",
+                            "diagramId": "jqrNbtAG6e2AEPoeQ",
+                            "elementId": "MRBPXh6rtTkPKtSqC",
+                            "diagramTypeId": "pq99ovHxKaCwPD7tB",
+                            "elementTypeId": "Zanqek96i666yP3SW",
+                            "versionId": "zkQkzLTYyjraFeqaX",
+                            "compartmentTypeId": "vJfDwZH3D7qNAkjxK",
+                            "input": "kek",
+                            "value": "kek",
+                            "index": 0,
+                            "isObjectRepresentation": false,
+                            "type": "text",
+                            "styleId": "ed94435ce4717069f38b5464",
+                            "style": {
+                                "align": "center",
+                                "fill": "white",
+                                "padding": 0,
+                                "placement": "start-left",
+                                "visible": true,
+                                "fontSize": 14,
+                                "fontStyle": "bold",
+                                "fontFamily": "Arial",
+                                "fontVariant": "normal"
+                            },
+                            "valueLC": "kek",
+                            "compartmentTypeName": "Name",
+                            "toolName": "MyTool"
+                        }
+                    ]
+                },
+                {
+                    "_id": "JeyvAQ4A6u2EFJzeL",
+                    "diagramId": "jqrNbtAG6e2AEPoeQ",
+                    "diagramTypeId": "pq99ovHxKaCwPD7tB",
+                    "elementTypeId": "669gyHMZ54zm9NHGT",
+                    "style": {
+                        "elementStyle": {
+                            "fill": "rgb(91,155,13)",
+                            "fillPriority": "color",
+                            "fillLinearGradientStartPointX": 0.5,
+                            "fillLinearGradientStartPointY": 0,
+                            "fillLinearGradientEndPointX": 0.5,
+                            "fillLinearGradientEndPointY": 1,
+                            "fillLinearGradientColorStops": [
+                                0,
+                                "white",
+                                1,
+                                "black"
+                            ],
+                            "fillRadialGradientStartPointX": 0.5,
+                            "fillRadialGradientStartPointY": 0.5,
+                            "fillRadialGradientEndPointX": 0.5,
+                            "fillRadialGradientEndPointY": 0.5,
+                            "fillRadialGradientStartRadius": 0,
+                            "fillRadialGradientEndRadius": 1,
+                            "fillRadialGradientColorStops": [
+                                0,
+                                "white",
+                                1,
+                                "black"
+                            ],
+                            "stroke": "rgb(165,113,156)",
+                            "strokeWidth": 1,
+                            "shadowColor": "red",
+                            "shadowBlur": 0,
+                            "shadowOpacity": 1,
+                            "shadowOffsetX": 0,
+                            "shadowOffsetY": 0,
+                            "tension": 0,
+                            "opacity": 1,
+                            "dash": [],
+                            "shape": "RoundRectangle"
+                        }
+                    },
+                    "styleId": "dfda756705b9e347089b6bd9",
+                    "type": "Box",
+                    "location": {
+                        "x": 267,
+                        "y": 106,
+                        "width": 150,
+                        "height": 99
+                    },
+                    "projectId": "Y3Q2KBhsz2WPrguGF",
+                    "versionId": "zkQkzLTYyjraFeqaX",
+                    "elementTypeName": "ShapeProperty",
+                    "toolName": "MyTool",
+                    "compartments": [
+                        {
+                            "_id": "BmetNFJfPrFqZFZgP",
+                            "projectId": "Y3Q2KBhsz2WPrguGF",
+                            "diagramId": "jqrNbtAG6e2AEPoeQ",
+                            "elementId": "JeyvAQ4A6u2EFJzeL",
+                            "diagramTypeId": "pq99ovHxKaCwPD7tB",
+                            "elementTypeId": "669gyHMZ54zm9NHGT",
+                            "versionId": "zkQkzLTYyjraFeqaX",
+                            "compartmentTypeId": "yenBrDjPzRm7zSb5m",
+                            "input": "lol",
+                            "value": "lol",
+                            "index": 48,
+                            "isObjectRepresentation": false,
+                            "type": "text",
+                            "styleId": "85fae3a8506e83193d2a046b",
+                            "style": {
+                                "align": "center",
+                                "fill": "white",
+                                "padding": 0,
+                                "placement": "start-left",
+                                "visible": true,
+                                "fontSize": 14,
+                                "fontStyle": "italic",
+                                "fontFamily": "Arial",
+                                "fontVariant": "normal"
+                            },
+                            "valueLC": "lol",
+                            "compartmentTypeName": "Path",
+                            "toolName": "MyTool"
+                        },
+                        {
+                            "_id": "h4XBdNENGQNpy55bG",
+                            "projectId": "Y3Q2KBhsz2WPrguGF",
+                            "diagramId": "jqrNbtAG6e2AEPoeQ",
+                            "elementId": "JeyvAQ4A6u2EFJzeL",
+                            "diagramTypeId": "pq99ovHxKaCwPD7tB",
+                            "elementTypeId": "669gyHMZ54zm9NHGT",
+                            "versionId": "zkQkzLTYyjraFeqaX",
+                            "compartmentTypeId": "D5rRF76LkpQ5bcCNc",
+                            "input": "sh:IRI",
+                            "value": "sh:nodeKind sh:IRI",
+                            "index": 98,
+                            "isObjectRepresentation": false,
+                            "type": "text",
+                            "styleId": "363ef3417f770aa64f5022b3",
+                            "style": {
+                                "align": "center",
+                                "fill": "white",
+                                "padding": 0,
+                                "placement": "start-left",
+                                "visible": true,
+                                "fontSize": 14,
+                                "fontStyle": "normal",
+                                "fontFamily": "Arial",
+                                "fontVariant": "normal"
+                            },
+                            "valueLC": "sh:nodekind sh:iri",
+                            "compartmentTypeName": "sh:nodeKind",
+                            "toolName": "MyTool"
+                        }
+                    ]
+                },
+                {
+                    "_id": "Cg42ixbBwvWnDmtwn",
+                    "diagramId": "jqrNbtAG6e2AEPoeQ",
+                    "diagramTypeId": "pq99ovHxKaCwPD7tB",
+                    "elementTypeId": "LqfXLXYvDg93rA9HP",
+                    "style": {
+                        "elementStyle": {
+                            "fill": "#b76d31",
+                            "fillPriority": "color",
+                            "fillLinearGradientStartPointX": 0.5,
+                            "fillLinearGradientStartPointY": 0,
+                            "fillLinearGradientEndPointX": 0.5,
+                            "fillLinearGradientEndPointY": 1,
+                            "fillLinearGradientColorStops": [
+                                0,
+                                "white",
+                                1,
+                                "black"
+                            ],
+                            "fillRadialGradientStartPointX": 0.5,
+                            "fillRadialGradientStartPointY": 0.5,
+                            "fillRadialGradientEndPointX": 0.5,
+                            "fillRadialGradientEndPointY": 0.5,
+                            "fillRadialGradientStartRadius": 0,
+                            "fillRadialGradientEndRadius": 1,
+                            "fillRadialGradientColorStops": [
+                                0,
+                                "white",
+                                1,
+                                "black"
+                            ],
+                            "stroke": "#b76d31",
+                            "strokeWidth": 1,
+                            "shadowColor": "red",
+                            "shadowBlur": 0,
+                            "shadowOpacity": 1,
+                            "shadowOffsetX": 0,
+                            "shadowOffsetY": 0,
+                            "tension": 0,
+                            "opacity": 1,
+                            "dash": [],
+                            "shape": "Rectangle"
+                        }
+                    },
+                    "styleId": "3f92a5b19fce92494e724382",
+                    "type": "Box",
+                    "location": {
+                        "x": 69,
+                        "y": 197,
+                        "width": 70,
+                        "height": 88
+                    },
+                    "projectId": "Y3Q2KBhsz2WPrguGF",
+                    "versionId": "zkQkzLTYyjraFeqaX",
+                    "elementTypeName": "Class",
+                    "toolName": "MyTool",
+                    "compartments": [
+                        {
+                            "_id": "YfF8tvJJLeGakmb5i",
+                            "projectId": "Y3Q2KBhsz2WPrguGF",
+                            "diagramId": "jqrNbtAG6e2AEPoeQ",
+                            "elementId": "Cg42ixbBwvWnDmtwn",
+                            "diagramTypeId": "pq99ovHxKaCwPD7tB",
+                            "elementTypeId": "LqfXLXYvDg93rA9HP",
+                            "versionId": "zkQkzLTYyjraFeqaX",
+                            "compartmentTypeId": "6xprtPstjpnqWPx3e",
+                            "input": "kjl",
+                            "value": "kjl",
+                            "index": 0,
+                            "isObjectRepresentation": false,
+                            "type": "text",
+                            "styleId": "5ba782e9e3a1a8b96acdb2af",
+                            "style": {
+                                "align": "center",
+                                "fill": "white",
+                                "padding": 0,
+                                "placement": "start-left",
+                                "visible": true,
+                                "fontSize": 14,
+                                "fontStyle": "bold",
+                                "fontFamily": "Arial",
+                                "fontVariant": "normal"
+                            },
+                            "valueLC": "kjl",
+                            "compartmentTypeName": "Name",
+                            "toolName": "MyTool"
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "project": {
+        "_id": "Y3Q2KBhsz2WPrguGF",
+        "name": "kkkkk",
+        "icon": "",
+        "category": "",
+        "toolId": "i95GZRJh3RErBzfFB",
+        "showPrefixesForAllNames": "true",
+        "decorateInstancePositionConstants": "true",
+        "createdAt": "2024-04-22T20:20:43.423Z",
+        "createdBy": "c3TBoLRFSdGzyXsJ9"
+    }
+}
