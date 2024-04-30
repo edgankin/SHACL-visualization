@@ -30,7 +30,6 @@ schema:PersonShape
 schema:AddressShape
     a sh:NodeShape ;
     sh:closed true ;
-    sh:targetClass schema:PLOL ;
     sh:property [
         sh:path schema:streetAddress ;
         sh:datatype xsd:string ;

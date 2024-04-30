@@ -3,8 +3,10 @@ import SHACLValidator from 'rdf-validate-shacl'
 import { toSparql } from 'clownface-shacl-path'
 import { createRequire } from "module";
 
-const FILE = 'simple3';
-const VERSION = '8';
+const FILE = 'OR';
+const VERSION = '3';
+
+const INDENT = '   '
 
 const require = createRequire(import.meta.url);
 
@@ -28,8 +30,8 @@ const validator = new SHACLValidator(shapes, { factory: rdf })
 const { sh } = validator.ns
 const schema = rdf.namespace('http://schema.org/')
 
-const schema_str = (schema.a.value).substring(0, schema.a.value.length-1);
-const sh_str = (sh.a.value).substring(0, sh.a.value.length-1);
+// const schema_str = (schema.a.value).substring(0, schema.a.value.length-1);
+// const sh_str = (sh.a.value).substring(0, sh.a.value.length-1);
 
 var objects = []
 var links = []
@@ -42,16 +44,67 @@ function get_id() {
     return '111111111111' + ret.toString();
 }
 
-function get_without_prefix(predicate) {
+/*
+@prefix dash: <http://datashapes.org/dash#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix schema: <http://schema.org/> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+ TODO rewrite me
+
+*/
+function get_without_prefix(predicate, use_alias=true) {
+
+    const dash_str = "http://datashapes.org/dash#"
+    const rdf_str = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    const rdfs_str = "http://www.w3.org/2000/01/rdf-schema#"
+    const schema_str = "http://schema.org/"
+    const sh_str = "http://www.w3.org/ns/shacl#"
+    const xsd_str = "http://www.w3.org/2001/XMLSchema#"
+
+    var ret = predicate;
+
+    console.log("get_without_prefix:")
+    console.log(predicate);
+
     if (predicate.startsWith(schema_str)) {
-        return predicate.substring(schema_str.length);
+        ret = predicate.substring(schema_str.length)
+        if (use_alias) {
+            ret = "schema:" + ret; 
+        }
     } else if (predicate.startsWith(sh_str)) {
-        return predicate.substring(sh_str.length);
+        ret = predicate.substring(sh_str.length);
+        if (use_alias) {
+            ret = "sh:" + ret; 
+        }
+    } else if (predicate.startsWith(dash_str)) {
+        ret = predicate.substring(dash_str.length)
+        if (use_alias) {
+            ret = "dash:" + ret; 
+        }
+    } else if (predicate.startsWith(rdf_str)) {
+        ret = predicate.substring(rdf_str.length)
+        if (use_alias) {
+            ret = "rdf:" + ret; 
+        }
+    } else if (predicate.startsWith(rdfs_str)) {
+        ret = predicate.substring(rdfs_str.length)
+        if (use_alias) {
+            ret = "rdfs:" + ret; 
+        }
+    } else if (predicate.startsWith(xsd_str)) {
+        ret = predicate.substring(xsd_str.length)
+        if (use_alias) {
+            ret = "xsd:" + ret; 
+        }
     } else {
+        console.log("WANRIGN: unknown prefix!");
         console.log(predicate);
-        console.log(schema_str);
-        throw "Unknown prefix";
     }
+
+    return ret;
 }
 
 function is_simple(predicate) {
@@ -138,7 +191,7 @@ function get_in_str(in_obj) {
     var ss = "\n";
 
     get_all(in_obj).forEach((obj) => {
-       ss = ss + "\t" + obj + "\n"; 
+       ss = ss + INDENT + get_without_prefix(obj.value) + "\n"; 
     });
     return ss;
 }
@@ -147,6 +200,7 @@ function get_in_str(in_obj) {
 
 function process_in(parent, in_obj) {
     parent.compartments.push(new Compartment(sh.in.value, get_in_str(in_obj)));
+    throw "LOL";
 }
 
 function process_languageIn(parent, in_obj) {
@@ -162,36 +216,36 @@ function process_logical_el(parent, logical_obj, logical_type) {
 
 
     console.log("process_logical_el");
-    console.log(parent);
-    console.log(logical_obj);
-    console.log(logical_type);
+    // console.log(parent);
+    // console.log(logical_obj);
+    // console.log(logical_type);
 
-     console.log("ALL LOGICAL ELEMENTS");
-     var lol = get_all(logical_obj).terms
-     console.log("ALL LOGICAL ELEMENTS lol");
-     console.log(lol);
-     console.log("ALL LOGICAL ELEMENTS starpterms");
-    get_all(logical_obj).forEach((o) => {
-        console.log(o.term);
+    //  console.log("ALL LOGICAL ELEMENTS");
+    //  var lol = get_all(logical_obj).terms
+    //  console.log("ALL LOGICAL ELEMENTS lol");
+    //  console.log(lol);
+    //  console.log("ALL LOGICAL ELEMENTS starpterms");
+    // get_all(logical_obj).forEach((o) => {
+    //     console.log(o.term);
 
-        console.log("-----");
+    //     console.log("-----");
         
-        validator.$shapes.dataset.match(o.term, null, null, null)._quads.forEach((quad) => {
-        console.log(quad);
-        });
+    //     validator.$shapes.dataset.match(o.term, null, null, null)._quads.forEach((quad) => {
+    //     console.log(quad);
+    //     });
 
-        console.log("-----");
+    //     console.log("-----");
         
-        validator.$shapes.dataset.match(null, null,o.term, null)._quads.forEach((quad) => {
-        console.log(quad);
-        });
+    //     validator.$shapes.dataset.match(null, null,o.term, null)._quads.forEach((quad) => {
+    //     console.log(quad);
+    //     });
 
-        console.log("-----");
+    //     console.log("-----");
 
 
-    });
+    // });
 
-     console.log("ALL LOGICAL ELEMENTS OUT");
+    //  console.log("ALL LOGICAL ELEMENTS OUT");
 
 
 
@@ -226,7 +280,9 @@ function process_logical_el(parent, logical_obj, logical_type) {
             
             if (quads.size == 1) {
                 quads.forEach((quad) => {
-                    links.push([el, process_object(quad, el)]);
+                    console.log("LOL: " + el.id);
+                    console.log(quad);
+                    process_object(quad, el);
                 });
          
             } else {
@@ -257,13 +313,13 @@ function process_logical_el(parent, logical_obj, logical_type) {
         return el; // TODO do we need return ? 
         
     } else {
-        var ss = "";
+        var ss = "\n";
         get_all(logical_obj).forEach((obj) => {
             validator.$shapes.dataset.match(obj.term, null, null, null)._quads.forEach((quad) => {
             if (is_simple(quad.predicate)) {
-                ss = ss + "\t" + quad.predicate.value + " " + quad.object.value + "\n"; 
+                ss = ss + INDENT + get_without_prefix(quad.predicate.value) + " " + get_without_prefix(quad.object.value) + "\n"; 
             } else if (quad.predicate.value == sh.in.value || quad.predicate.value == sh.languageIn.value) {
-                ss = ss + "\t" + quad.predicate.value + " " + get_in_str(quad.object) + "\n"; 
+                ss = ss + INDENT + get_without_prefix(quad.predicate.value) + " " + get_in_str(quad.object) + "\n"; 
             } else {
                 throw "Unexpected SHACL construction inside logical element"
             }
@@ -276,8 +332,8 @@ function process_logical_el(parent, logical_obj, logical_type) {
 
 class Compartment {
     constructor(type, value) {
-        this.type = type;
-        this.value = value;
+        this.type = get_without_prefix(type);
+        this.value = get_without_prefix(value);
     }
 
     toString() {
@@ -285,7 +341,7 @@ class Compartment {
     }
 
     toJSON(boxName) {
-        return get_compartment_JSON("sh:" + get_without_prefix(this.type), this.value, boxName);
+        return get_compartment_JSON(this.type, this.value, boxName);
     }
 }
 
@@ -305,7 +361,7 @@ function get_compartment_JSON(name, value, boxName) {
         value: comp_type.prefix + value,
         index: comp_type.index,
         isObjectRepresentation: false,
-        type: comp_type.inputType.inputType,
+        type: "text",
         styleId: comp_type.styles[0].id,
         style: comp_type.styles[0].style, 
         valueLC: (comp_type.prefix + value).toLowerCase(),
@@ -318,7 +374,7 @@ function get_compartment_JSON(name, value, boxName) {
 
 class Predicate {
     constructor(value) {
-        this.value = value;
+        this.value = get_without_prefix(value);
         this.id = get_id();
     }
 
@@ -328,7 +384,7 @@ class Predicate {
 
     toJSON() {
         var box = get_empy_box("Relation", "Default", this.id);
-        box.compartments.push(get_compartment_JSON("Name", this.value, "Predicate"))
+        box.compartments.push(get_compartment_JSON("Name", this.value, "Relation"))
         return box;
     }
 }
@@ -436,7 +492,7 @@ class NodeShape {
         var ss =  "NodeShape: " + this.name + "| id: " + this.id + "\n";
         ss = ss + "Compartments: [ \n";
         this.compartments.forEach((comp) => {
-            ss = ss + "\t" + comp.toString() +  "\n";
+            ss = ss + INDENT + comp.toString() +  "\n";
         });
         ss = ss + "]\n";
         return ss;
@@ -535,7 +591,7 @@ class PropertyShape {
         var ss =  "PropertyShape: " + this.path.toString(({ prologue: false }))  + "| id: " + this.id  + "\n";
         ss = ss + "Compartments: [ \n";
         this.compartments.forEach((comp) => {
-            ss = ss + "\t" + comp.toString() +  "\n";
+            ss = ss + INDENT + comp.toString() +  "\n";
         });
         ss = ss + "]\n";
         return ss;
@@ -555,7 +611,7 @@ class PropertyShape {
 
 class Object {
     constructor(name) {
-        this.name = name;
+        this.name = get_without_prefix(name);
         this.id = get_id();
     }
 
@@ -572,7 +628,7 @@ class Object {
 
 class Class {
     constructor(name) {
-        this.name = name;
+        this.name =  get_without_prefix(name);
         this.id = get_id();
     }
 
@@ -582,7 +638,7 @@ class Class {
 
     toJSON() {
         var box = get_empy_box("Class", "Default", this.id);
-        box.compartments.push(get_compartment_JSON("Name", get_without_prefix(this.name), "Class"))
+        box.compartments.push(get_compartment_JSON("Name", this.name, "Class"))
         return box;
     }
 }
@@ -590,7 +646,7 @@ class Class {
 // TODO compartmets possible
 class LogicalEl {
     constructor(type) {
-        this.type = type;
+        this.type = get_without_prefix(type, false).toUpperCase();
         this.id = get_id();
     }
 
@@ -600,7 +656,7 @@ class LogicalEl {
 
     toJSON() {
         var box = get_empy_box("LogicalElement", "Default", this.id);
-        box.compartments.push(get_compartment_JSON("TYPE",get_without_prefix(this.value).toUpperCase(), "LogicalElement"))
+        box.compartments.push(get_compartment_JSON("TYPE", this.type, "LogicalElement"))
         return box;
     }
 }
@@ -833,7 +889,7 @@ validator.$shapes.has(rdf.type, sh.NodeShape).toArray().forEach((shape) => {
 });
 console.log('-----+++++++++++++++++++++++++++++');
     validator.$shapes.has(rdf.type, sh.NodeShape).toArray().forEach((shape) => {
-        if (shape.value.startsWith('http://schema.org')) {
+        if (!processed[shape.value] && shape.value.startsWith('http://schema.org')) {
             console.log(shape.term);
             var shape_obj = new NodeShape(shape.term);
             //objects.push(shape_obj);
@@ -857,6 +913,8 @@ console.log('-----+++++++++++++++++++++++++++++');
     links.forEach((link) => {
         console.log(link[0].id + " --> " + link[1].id);
     });
+
+    // return;
     
     data = fs.readFileSync('sample_data.json', 'utf-8');
     

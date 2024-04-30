@@ -523,7 +523,7 @@
 											"padding": 0,
 											"placement": "start-left",
 											"visible": true,
-											"fontSize": 14,
+											"fontSize": 16,
 											"fontStyle": "bold",
 											"fontFamily": "Arial",
 											"fontVariant": "normal"
@@ -674,7 +674,7 @@
 										"name": "Default",
 										"id": "3aacf39ef773cc59398e2fed",
 										"style": {
-											"align": "center",
+											"align": "left",
 											"fill": "white",
 											"padding": 0,
 											"placement": "start-left",
@@ -877,7 +877,7 @@
 											"padding": 0,
 											"placement": "start-left",
 											"visible": true,
-											"fontSize": 14,
+											"fontSize": 16,
 											"fontStyle": "bold",
 											"fontFamily": "Arial",
 											"fontVariant": "normal"
@@ -947,7 +947,7 @@
 										"name": "Default",
 										"id": "2e10c1c65a8128eb3942a50a",
 										"style": {
-											"align": "center",
+											"align": "left",
 											"fill": "white",
 											"padding": 0,
 											"placement": "start-left",
@@ -1058,7 +1058,7 @@
 										"name": "Default",
 										"id": "363ef3417f770aa64f5022b3",
 										"style": {
-											"align": "center",
+											"align": "left",
 											"fill": "white",
 											"padding": 0,
 											"placement": "start-left",
@@ -1117,9 +1117,9 @@
 								"noRepresentation": false,
 								"tabIndex": 4,
 								"dialogTabId": "k7AgczFDRqMqM3LrF",
-								"name": "sh:dataType",
+								"name": "sh:datatype",
 								"description": "",
-								"prefix": "sh:dataType ",
+								"prefix": "sh:datatype ",
 								"suffix": "",
 								"defaultValue": "",
 								"isObjectRepresentation": true,
@@ -1133,7 +1133,7 @@
 										"name": "Default",
 										"id": "09930ebf743e6ede33857415",
 										"style": {
-											"align": "center",
+											"align": "left",
 											"fill": "white",
 											"padding": 0,
 											"placement": "start-left",
@@ -1176,7 +1176,7 @@
 									}
 								],
 								"type": "text",
-								"label": "sh:dataType"
+								"label": "sh:datatype"
 							}
 						},
 						{
@@ -1208,7 +1208,7 @@
 										"name": "Default",
 										"id": "8b8b52420d1016554dd51e5c",
 										"style": {
-											"align": "center",
+											"align": "left",
 											"fill": "white",
 											"padding": 0,
 											"placement": "start-left",
@@ -1283,7 +1283,7 @@
 										"name": "Default",
 										"id": "95e9aef4b4e53e1c57d9512a",
 										"style": {
-											"align": "center",
+											"align": "left",
 											"fill": "white",
 											"padding": 0,
 											"placement": "start-left",
@@ -1358,7 +1358,7 @@
 										"name": "Default",
 										"id": "f4a404f0013e2427b5dd5b20",
 										"style": {
-											"align": "center",
+											"align": "left",
 											"fill": "white",
 											"padding": 0,
 											"placement": "start-left",
@@ -1433,7 +1433,7 @@
 										"name": "Default",
 										"id": "d6ecb01ef88c58f669ea4af3",
 										"style": {
-											"align": "center",
+											"align": "left",
 											"fill": "white",
 											"padding": 0,
 											"placement": "start-left",
@@ -1508,7 +1508,7 @@
 										"name": "Default",
 										"id": "b949419f854462baf8512409",
 										"style": {
-											"align": "center",
+											"align": "left",
 											"fill": "white",
 											"padding": 0,
 											"placement": "start-left",
@@ -1583,7 +1583,7 @@
 										"name": "Default",
 										"id": "65ed3900a7cad28be524798e",
 										"style": {
-											"align": "center",
+											"align": "left",
 											"fill": "white",
 											"padding": 0,
 											"placement": "start-left",
@@ -1658,7 +1658,7 @@
 										"name": "Default",
 										"id": "a2e3c651a4b8d03d294cc49f",
 										"style": {
-											"align": "center",
+											"align": "left",
 											"fill": "white",
 											"padding": 0,
 											"placement": "start-left",
@@ -1733,7 +1733,7 @@
 										"name": "Default",
 										"id": "c36a87526909d6c09cb9e66c",
 										"style": {
-											"align": "center",
+											"align": "left",
 											"fill": "white",
 											"padding": 0,
 											"placement": "start-left",
@@ -1808,7 +1808,7 @@
 										"name": "Default",
 										"id": "c85802fc1ce401871084300c",
 										"style": {
-											"align": "center",
+											"align": "left",
 											"fill": "white",
 											"padding": 0,
 											"placement": "start-left",
@@ -1883,7 +1883,7 @@
 										"name": "Default",
 										"id": "378f9dce83a3d1329346640d",
 										"style": {
-											"align": "center",
+											"align": "left",
 											"fill": "white",
 											"padding": 0,
 											"placement": "start-left",
@@ -1958,7 +1958,7 @@
 										"name": "Default",
 										"id": "a1580a7e6729525f4f5f4d80",
 										"style": {
-											"align": "center",
+											"align": "left",
 											"fill": "white",
 											"padding": 0,
 											"placement": "start-left",
@@ -2033,7 +2033,7 @@
 										"name": "Default",
 										"id": "c076335cb0af1b4bdd2ed5fb",
 										"style": {
-											"align": "center",
+											"align": "left",
 											"fill": "white",
 											"padding": 0,
 											"placement": "start-left",
@@ -2100,7 +2100,7 @@
 								"isObjectRepresentation": false,
 								"inputType": {
 									"type": "input",
-									"inputType": "text",
+									"inputType": "number",
 									"placeholder": ""
 								},
 								"styles": [
@@ -2108,7 +2108,7 @@
 										"name": "Default",
 										"id": "9948fcdf841bc9a6cb064bf0",
 										"style": {
-											"align": "center",
+											"align": "left",
 											"fill": "white",
 											"padding": 0,
 											"placement": "start-left",
@@ -2183,7 +2183,7 @@
 										"name": "Default",
 										"id": "70c87be948b6fd759c269dac",
 										"style": {
-											"align": "center",
+											"align": "left",
 											"fill": "white",
 											"padding": 0,
 											"placement": "start-left",
@@ -2270,7 +2270,7 @@
 										"name": "Default",
 										"id": "19555c894a2e84db27ea5ae1",
 										"style": {
-											"align": "center",
+											"align": "left",
 											"fill": "white",
 											"padding": 0,
 											"placement": "start-left",
@@ -2363,7 +2363,7 @@
 										"name": "Default",
 										"id": "7a81a5c5b1adbe8910b08af9",
 										"style": {
-											"align": "center",
+											"align": "left",
 											"fill": "white",
 											"padding": 0,
 											"placement": "start-left",
@@ -2663,7 +2663,7 @@
 										"name": "Default",
 										"id": "beb07fe653c754827ee12ee9",
 										"style": {
-											"align": "center",
+											"align": "left",
 											"fill": "white",
 											"padding": 0,
 											"placement": "start-left",
