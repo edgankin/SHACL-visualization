@@ -1,0 +1,26 @@
+@prefix dbo: <http://dbpedia.org/ontology/> .
+@prefix dbr: <http://dbpedia.org/resource/> .
+@prefix dbp: <http://dbpedia.org/property/> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix : <http://example.org/> .
+ 
+  :PersonShape a sh:NodeShape ;
+    sh:targetClass dbo:Person ;
+    sh:property [
+        sh:path dbo:birthDate ;
+        sh:minCount 1
+    ] ;
+    sh:property [
+        sh:path dbo:parent ;
+        sh:qualifiedValueShape [
+            sh:node :PersonShape
+        ] ;
+        sh:qualifiedMaxCount 2
+    ] ;
+    sh:property [
+        sh:path dbo:spouse ;
+        sh:qualifiedValueShape [
+            sh:node :PersonShape
+        ] ;
+        sh:qualifiedMaxCount 1
+    ] .

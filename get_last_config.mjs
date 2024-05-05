@@ -13,7 +13,13 @@ var extraced_config = {}
 
 extraced_config.tool = data.tool
 extraced_config.types = [data.types[data.types.length -1]]
-extraced_config.presentations = [data.presentations[data.types.length -1]]
+extraced_config.presentations = []
+
+data.presentations.forEach(pres => {
+    if (pres.object.name == "SHACL_WIP_22") {
+        extraced_config.presentations.push(pres);
+    }
+});
 
 console.log(extraced_config)
 

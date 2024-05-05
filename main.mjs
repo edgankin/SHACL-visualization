@@ -3,7 +3,11 @@ import SHACLValidator from 'rdf-validate-shacl'
 import { toSparql } from 'clownface-shacl-path'
 import { createRequire } from "module";
 
-const FILE = 'OR';
+import formats from '@rdfjs/formats-common'
+//import { shrink } from '@zazuko/rdf-vocabularies'
+import stringToStream from "string-to-stream"
+
+const FILE = 'LUBM_5';
 const VERSION = '3';
 
 const INDENT = '   '
@@ -23,9 +27,16 @@ config = JSON.parse(data);
 const diagramTypeId =  config.types[0].object._id; // TODO
 const diagramId = config.types[0].object.diagramId
 
+var ssss = fs.readFileSync('./real-world-data/' + FILE + '.ttl', 'utf-8');
 
-const shapes = await rdf.dataset().import(rdf.fromFile('./data/' + FILE + '.ttl'))
-const validator = new SHACLValidator(shapes, { factory: rdf })
+
+const contentStream = stringToStream(ssss)
+const parser = formats.parsers.get('text/turtle')
+var lolS = parser.import(contentStream)
+//const shapes = await rdf.dataset().import(lolS);
+const shapes = await rdf.dataset().import(rdf.fromFile('./real-world-data/' + FILE + '.ttl'))
+var validator = new SHACLValidator(shapes, { factory: rdf })
+//validator = new SHACLValidator(shapes, { factory: rdf })
 
 const { sh } = validator.ns
 const schema = rdf.namespace('http://schema.org/')
@@ -61,13 +72,21 @@ function get_without_prefix(predicate, use_alias=true) {
     const rdf_str = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
     const rdfs_str = "http://www.w3.org/2000/01/rdf-schema#"
     const schema_str = "http://schema.org/"
+    const dot_str = "http://example.org/"
     const sh_str = "http://www.w3.org/ns/shacl#"
     const xsd_str = "http://www.w3.org/2001/XMLSchema#"
+    const dbp_str = "http://dbpedia.org/property/"
+    const dbo_str = "http://dbpedia.org/ontology/"
+    const dbr_str = "http://dbpedia.org/resource/"
+    const foaf_str = "http://xmlns.com/foaf/0.1/"  
+    const ub_str = "http://swat.cse.lehigh.edu/onto/univ-bench.owl#" 
 
     var ret = predicate;
 
     console.log("get_without_prefix:")
     console.log(predicate);
+    //console.log(shrink(predicate));
+
 
     if (predicate.startsWith(schema_str)) {
         ret = predicate.substring(schema_str.length)
@@ -99,6 +118,36 @@ function get_without_prefix(predicate, use_alias=true) {
         if (use_alias) {
             ret = "xsd:" + ret; 
         }
+    } else if (predicate.startsWith(dbp_str)) {
+        ret = predicate.substring(dbp_str.length)
+        if (use_alias) {
+            ret = "dbp:" + ret; 
+        }
+    } else if (predicate.startsWith(dbo_str)) {
+        ret = predicate.substring(dbo_str.length)
+        if (use_alias) {
+            ret = "dbo:" + ret; 
+        }
+    } else if (predicate.startsWith(dot_str)) {
+        ret = predicate.substring(dot_str.length)
+        if (use_alias) {
+            ret = ":" + ret; 
+        }
+    } else if (predicate.startsWith(dbr_str)) {
+        ret = predicate.substring(dbr_str.length)
+        if (use_alias) {
+            ret = "dbr:" + ret; 
+        }
+    } else if (predicate.startsWith(foaf_str)) {
+        ret = predicate.substring(foaf_str.length)
+        if (use_alias) {
+            ret = "foaf:" + ret; 
+        }
+    } else if (predicate.startsWith(ub_str)) {
+        ret = predicate.substring(ub_str.length)
+        if (use_alias) {
+            ret = "ub:" + ret; 
+        }
     } else {
         console.log("WANRIGN: unknown prefix!");
         console.log(predicate);
@@ -129,9 +178,13 @@ function is_simple(predicate) {
             sh.pattern.value,
             sh.uniqueLang.value,
             sh.severity.value,
-            sh.class.value, // TODO check
             sh.hasValue.value, // TODO check
             sh.flags.value,
+            sh.message.value,
+            sh.ignored.value, // TODO think
+            sh.qualifiedValueShapesDisjoint.value,
+            sh.qualifiedMinCount.value,
+            sh.qualifiedMaxCount.value,
         ].includes(predicate.value);
 }
 
@@ -147,15 +200,27 @@ function process_object(quad, parent) {
     switch (quad.predicate.value) {
         case sh.property.value:
             if (processed[quad.object.value]) {
+                links.push([parent, processed[quad.object.value]]);
                 return processed[quad.object.value];
             } else {
-                return new PropertyShape(quad.object);
+                var prop = new PropertyShape(quad.object);
+                links.push([parent, prop]);
+                return prop
             }
         case sh.or.value:
         case sh.and.value:
         case sh.xone.value:
         case sh.not.value:
                 return process_logical_el(parent, quad.object, quad.predicate.value);
+        case sh.class.value:
+            if (!processed[quad.object.value]) {
+                var class_obj = new Class(quad.object.value);
+                links.push([parent, class_obj]);
+                // objects.push(prop_obj);
+            } else {
+                links.push([parent, processed[quad.object.value]]);
+            }
+            break;            
         default:
             console.log(quad);
             throw "Unexpected SHACL construction while process link to SHACL object"
@@ -421,12 +486,18 @@ class NodeShape {
                             var prop_obj = new PropertyShape(quad.object);
                             links.push([this, prop_obj]);
                            // objects.push(prop_obj);
+                        } else {
+                            links.push([this, processed[quad.object.value]]);
                         }
                         break;
                     case sh.targetClass.value:
-                        var target_obj = new Class(quad.object.value);
-                        links.push([target_obj, this]);
-                        objects.push(target_obj);
+                        if (processed[quad.object.value]) {
+                            links.push([processed[quad.object.value], this]);
+                        } else {
+                            var target_obj = new Class(quad.object.value);
+                            links.push([target_obj, this]);
+                        }
+                        //objects.push(target_obj);
                         break;
                     case sh.targetNode.value:
                         var target_obj = new Object(quad.object.value);
@@ -445,9 +516,9 @@ class NodeShape {
                         break;
                     case sh.target.value:
                         break; // TODO
-                    case sh.ignored.value:
-                        this.ignored = true;
-                        break;
+                    // case sh.ignored.value:
+                    //     this.ignored = true;
+                    //     break;
                     case sh.deactivated.value:
                         this.deactivated = true;
                         break;
@@ -477,6 +548,9 @@ class NodeShape {
                             links.push([this, new NodeShape(quad.object)]);
                         } 
                     case validator.ns.rdf.type.value:
+                        if (quad.object.value == validator.ns.rdfs.Class.value) {
+                            this.name = this.name + "\n<<Class>>"
+                        }
                         break;    
                     default:
                         console.log(quad);
@@ -529,8 +603,9 @@ function process_path(path_obj) {
     return toSparql(validator.$shapes.node(path_obj));
 }
 
+
 class PropertyShape {
-    constructor(property) {
+    constructor(property, qualified) {
         this.id = get_id();
 
         console.log("PROCESS PROPERTY!");
@@ -541,6 +616,10 @@ class PropertyShape {
 
         //this.name = get_without_prefix(property.value);
         this.compartments = [];
+
+        if (qualified) {
+            this.qualified = true;
+        }
 
         processed[property.value] = this;
 
@@ -554,6 +633,15 @@ class PropertyShape {
                     case sh.path.value: // TODO non trivial path
                         this.path = process_path(quad.object);
                         break;
+                    case sh.class.value:
+                        if (!processed[quad.object.value]) {
+                            var class_obj = new Class(quad.object.value);
+                            links.push([this, class_obj]);
+                            // objects.push(prop_obj);
+                        } else {
+                            links.push([this, processed[quad.object.value]]);
+                        }
+                        break;       
                     case sh.in.value:
                         process_in(this, quad.object);
                         break;
@@ -576,6 +664,27 @@ class PropertyShape {
                         break; 
                     case validator.ns.rdf.type.value:
                         break;
+                    case sh.qualifiedValueShape.value:
+                        if (validator.$shapes.dataset.match(quad.object, null, null, null)._quads.size > 1) {
+                            var propertyshape = new PropertyShape(quad.object, true);
+                            links.push([this, propertyshape]);
+                        } else {
+                            var link = validator.$shapes.node(quad.object).out(sh.node).term;
+                            if (link) {
+                                if (processed[link.value]) {
+                                    links.push([this, processed[link.value]]);
+                                } else {
+                                    // TODO check it is node shape
+                                    links.push([this, new NodeShape(link)]);
+                                }      
+                            } else {
+                                throw "Unknown construction inside qualified node"
+                            }
+                        }
+                        break;
+                        // console.log("qualifiedValueShape!");
+                        // console.log(validator.$shapes.dataset.match(quad.object, null, null, null)._quads)
+                        // throw "LOL";    
                     default:
                         console.log(quad);
                         throw "Unexpected SHACL construction in property"; 
@@ -588,7 +697,7 @@ class PropertyShape {
     }
 
     toString() {
-        var ss =  "PropertyShape: " + this.path.toString(({ prologue: false }))  + "| id: " + this.id  + "\n";
+        var ss =  "PropertyShape: " + this.path.toString(({ prologue: false }))  +  " (" + this.qualified + ") " +"| id: " + this.id  + "\n";
         ss = ss + "Compartments: [ \n";
         this.compartments.forEach((comp) => {
             ss = ss + INDENT + comp.toString() +  "\n";
@@ -598,7 +707,11 @@ class PropertyShape {
     }
 
     toJSON() {
-        var box = get_empy_box("PropertyShape", "Default", this.id);
+        var style = "Default";
+        if (this.qualified) {
+            style = "Qualified";
+        }
+        var box = get_empy_box("PropertyShape", style, this.id);
         box.compartments.push(get_compartment_JSON("Path", this.path.toString(({ prologue: false })), "PropertyShape"))
 
         this.compartments.forEach((comp) => {
@@ -628,8 +741,10 @@ class Object {
 
 class Class {
     constructor(name) {
+        processed[name] = this;
         this.name =  get_without_prefix(name);
         this.id = get_id();
+        objects.push(this);
     }
 
     toString() {
@@ -724,8 +839,8 @@ function get_empty_diagram() {
         }
 }
 
-function getLinkJSON(link) {
-    var element_obj = get_by_name(config.types[0].lineTypes, "Connection");
+function getLinkJSON(link, link_type) {
+    var element_obj = get_by_name(config.types[0].lineTypes, link_type);
     var style_obj = get_by_name(element_obj.object.styles, "Default");
     return {
         _id: get_id(),
@@ -889,7 +1004,7 @@ validator.$shapes.has(rdf.type, sh.NodeShape).toArray().forEach((shape) => {
 });
 console.log('-----+++++++++++++++++++++++++++++');
     validator.$shapes.has(rdf.type, sh.NodeShape).toArray().forEach((shape) => {
-        if (!processed[shape.value] && shape.value.startsWith('http://schema.org')) {
+        if (!processed[shape.value] && (shape.value.startsWith('http://schema.org') || shape.value.startsWith('http://example.org'))) {
             console.log(shape.term);
             var shape_obj = new NodeShape(shape.term);
             //objects.push(shape_obj);
@@ -914,7 +1029,7 @@ console.log('-----+++++++++++++++++++++++++++++');
         console.log(link[0].id + " --> " + link[1].id);
     });
 
-    // return;
+     return;
     
     data = fs.readFileSync('sample_data.json', 'utf-8');
     
@@ -931,7 +1046,7 @@ console.log('-----+++++++++++++++++++++++++++++');
     });
 
     links.forEach((link) => {
-        diagram_obj.elements.push(getLinkJSON(link));
+        diagram_obj.elements.push(getLinkJSON(link, "Connection"));
     })
 
     fs.writeFile('diagram_' + FILE + '_v' + VERSION + '.json', JSON.stringify({diagrams : [diagram_obj], project : sample_data.project}, null, "\t"), (err) => {

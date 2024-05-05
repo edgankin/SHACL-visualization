@@ -1,0 +1,231 @@
+@prefix MiniUniv: <http://schema.org/> .
+@prefix dash: <http://datashapes.org/dash#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix schema: <http://schema.org/> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+MiniUniv:Course
+  a sh:NodeShape ;
+  sh:property MiniUniv:Course-courseCode ;
+  sh:property MiniUniv:Course-courseCredits ;
+  sh:property MiniUniv:Course-courseExtInfo ;
+  sh:property MiniUniv:Course-courseName ;
+  sh:property MiniUniv:Course-isTaughtBy ;
+.
+MiniUniv:Course-courseCode
+  a sh:PropertyShape ;
+  sh:path MiniUniv:courseCode ;
+  sh:datatype xsd:string ;
+.
+MiniUniv:Course-courseCredits
+  a sh:PropertyShape ;
+  sh:path MiniUniv:courseCredits ;
+.
+MiniUniv:Course-courseExtInfo
+  a sh:PropertyShape ;
+  sh:path MiniUniv:courseExtInfo ;
+  sh:datatype xsd:string ;
+.
+MiniUniv:Course-courseName
+  a sh:PropertyShape ;
+  sh:path MiniUniv:courseName ;
+  sh:datatype xsd:string ;
+.
+
+MiniUniv:Course-isTaughtBy
+  a sh:PropertyShape ;
+  sh:path MiniUniv:isTaughtBy ;
+  sh:class MiniUniv:Teacher ;
+.
+MiniUniv:MandatoryCourse
+  a sh:NodeShape ;
+  sh:not [sh:class MiniUniv:OptionalCourse ; ] ;
+  sh:property MiniUniv:MandatoryCourse-isTaughtBy ;
+.
+MiniUniv:MandatoryCourse-isTaughtBy
+  a sh:PropertyShape ;
+  sh:path MiniUniv:isTaughtBy ;
+  sh:class MiniUniv:Professor ;
+.
+MiniUniv:OptionalCourse a sh:NodeShape ; .
+
+MiniUniv:Person
+  a sh:NodeShape ;
+  sh:property MiniUniv:Person-nationality ;
+  sh:property MiniUniv:Person-personID ;
+  sh:property MiniUniv:Person-personName ;
+.
+MiniUniv:Person-nationality
+  a sh:PropertyShape ;
+  sh:path MiniUniv:nationality ;
+  sh:class MiniUniv:Nationality ;
+  sh:maxCount 1 ;
+.
+MiniUniv:Person-personID
+  a sh:PropertyShape ;
+  sh:path MiniUniv:personID ;
+  sh:datatype xsd:string ;
+.
+MiniUniv:Person-personName
+  a sh:PropertyShape ;
+  sh:path MiniUniv:personName ;
+  sh:datatype xsd:string ;
+.
+
+MiniUniv:Student-enrolled
+  a sh:PropertyShape ;
+  sh:path MiniUniv:enrolled ;
+  sh:class MiniUniv:AcademicProgram ;
+  sh:maxCount 1 ;
+  sh:minCount 1 ;
+.
+MiniUniv:Student-r
+  a sh:PropertyShape ;
+  sh:path MiniUniv:r ;
+  sh:class MiniUniv:Registration ;
+.
+MiniUniv:Student-studentName
+  a sh:PropertyShape ;
+  sh:path MiniUniv:studentName ;
+  sh:datatype xsd:string ;
+.
+
+MiniUniv:Student
+  a sh:NodeShape ;
+  sh:property MiniUniv:Student-enrolled ;
+  sh:property MiniUniv:Student-r ;
+  sh:property MiniUniv:Student-studentName ;
+  sh:property MiniUniv:Student-studentNumber ;
+  sh:property MiniUniv:Student-takes ;
+
+.
+
+MiniUniv:Student-studentNumber
+  a sh:PropertyShape ;
+  sh:path MiniUniv:studentNumber ;
+  sh:datatype xsd:string ;
+.
+MiniUniv:Student-takes
+  a sh:PropertyShape ;
+  sh:path MiniUniv:takes ;
+  sh:class MiniUniv:Course ;
+  sh:minCount 1 ;
+.
+
+MiniUniv:Teacher
+  a sh:NodeShape ;
+  sh:property MiniUniv:Teacher-facultyLevel ;
+  sh:property MiniUniv:Teacher-salary ;
+  sh:property MiniUniv:Teacher-teacherName ;
+  sh:property MiniUniv:Teacher-teaches ;
+.
+MiniUniv:Teacher-facultyLevel
+  a sh:PropertyShape ;
+  sh:path MiniUniv:facultyLevel ;
+  sh:class MiniUniv:FacultyLevel ;
+  sh:maxCount 1 ;
+.
+MiniUniv:Teacher-salary
+  a sh:PropertyShape ;
+  sh:path MiniUniv:salary ;
+.
+MiniUniv:Teacher-teacherName
+  a sh:PropertyShape ;
+  sh:path MiniUniv:teacherName ;
+  sh:datatype xsd:string ;
+.
+MiniUniv:Teacher-teaches
+  a sh:PropertyShape ;
+  sh:path MiniUniv:teaches ;
+  sh:class MiniUniv:Course ;
+.
+MiniUniv:Professor
+  a sh:NodeShape ;
+  sh:property MiniUniv:Professor-facultyLevel ;
+.
+MiniUniv:Professor-facultyLevel
+  a sh:PropertyShape ;
+  sh:path MiniUniv:facultyLevel ;
+  sh:class MiniUniv:FacultyLevel ;
+  sh:hasValue MiniUniv:Level_Professor ;
+.
+MiniUniv:Assistant
+  a sh:NodeShape ;
+  sh:not [ sh:class MiniUniv:Professor ; ] ;
+  sh:property MiniUniv:Assistant-facultyLevel ;
+.
+MiniUniv:Assistant-facultyLevel
+  a sh:PropertyShape ;
+  sh:path MiniUniv:facultyLevel ;
+  sh:class MiniUniv:FacultyLevel ;
+  sh:hasValue MiniUniv:Level_Assistant ;
+.
+
+MiniUniv:Registration
+  a sh:NodeShape ;
+  sh:property MiniUniv:Registration-course ;
+  sh:property MiniUniv:Registration-datePaid ;
+  sh:property MiniUniv:Registration-student ;
+.
+MiniUniv:Registration-course
+  a sh:PropertyShape ;
+  sh:path MiniUniv:course ;
+  sh:class MiniUniv:Course ;
+  sh:maxCount 1 ;
+  sh:minCount 1 ;
+.
+MiniUniv:Registration-datePaid
+  a sh:PropertyShape ;
+  sh:path MiniUniv:datePaid ;
+  sh:datatype xsd:dateTime ;
+.
+MiniUniv:Registration-student
+  a sh:PropertyShape ;
+  sh:path MiniUniv:student ;
+  sh:class MiniUniv:Student ;
+  sh:maxCount 1 ;
+  sh:minCount 1 ;
+.
+
+MiniUniv:CompletedRegistration
+  a sh:NodeShape ;
+  sh:property  MiniUniv:CompletedRegistration-dateCompleted ;
+  sh:property MiniUniv:CompletedRegistration-mark ;
+.
+MiniUniv:CompletedRegistration-dateCompleted
+  a sh:PropertyShape ;
+  sh:path MiniUniv:dateCompleted ;
+  sh:datatype xsd:dateTime ;
+.
+MiniUniv:CompletedRegistration-mark
+  a sh:PropertyShape ;
+  sh:path MiniUniv:mark ;
+.
+
+MiniUniv:FacultyLevel
+  a sh:NodeShape ;
+  sh:property MiniUniv:FacultyLevel-acadTitle ;
+.
+MiniUniv:FacultyLevel-acadTitle
+  a sh:PropertyShape ;
+  sh:path MiniUniv:acadTitle ;
+  sh:datatype xsd:string ;
+.
+
+MiniUniv:Nationality
+  a sh:NodeShape ;
+  sh:property MiniUniv:Nationality-nCode ;
+  sh:property MiniUniv:Nationality-nValue ;
+.
+MiniUniv:Nationality-nCode
+  a sh:PropertyShape ;
+  sh:path MiniUniv:nCode ;
+  sh:datatype xsd:string ;
+.
+MiniUniv:Nationality-nValue
+  a sh:PropertyShape ;
+  sh:path MiniUniv:nValue ;
+  sh:datatype xsd:string ;
+.
