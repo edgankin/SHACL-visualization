@@ -16,7 +16,7 @@ extraced_config.types = [data.types[data.types.length -1]]
 extraced_config.presentations = []
 
 data.presentations.forEach(pres => {
-    if (pres.object.name == "SHACL_WIP_22") {
+    if (pres.object.name == "SHACL_WIP_24") {
         extraced_config.presentations.push(pres);
     }
 });
